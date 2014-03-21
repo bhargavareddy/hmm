@@ -113,12 +113,14 @@ int main()
 	//Creating a map for start probabilities
 
 	cout<<"Please give me the probabilities for each of the states: "<<endl;
-	
+	ifstream state_prob ("input_file/start_prob");
 	total_prob = 0.0;
 	for(i=0;i<s;i++)
 	{
 		cout<<state_vec[i]<<": ";
-		cin>>prob_s;
+		getline(state_prob,temp_s);
+		prob_s = stof(temp_s);
+		cout<<temp_s<<endl;
 		total_prob = total_prob + prob_s;
 		if(total_prob < 1.0 || i== (s - 1))
 			{
@@ -135,15 +137,20 @@ int main()
 
 	}
 
+	state_prob.close();
+
 	//// Taking the inputs for transitions..
 	cout<<"Give the inputs for transition probabilities: \n";
+	ifstream tran_prob ("input_file/trans_prob");
 	pair<int,int> my_pair;
 	for(i=0;i<s;i++)
 	{
 		total_prob = 0.0;
 		for(j=0;j<s;j++)
 		{
-			cin>>prob_s;
+			tran_prob>>temp_s;
+			prob_s = stof(temp_s);
+			cout<<prob_s<<" ";
 			total_prob = total_prob + prob_s;
 			my_pair = make_pair(i,j);
 			if(total_prob < 1 || j==(s - 1))
@@ -163,15 +170,21 @@ int main()
 				exit(1);
 			}
 		}
+		cout<<endl;
 	}
 
+	tran_prob.close();
+
 	cout<<"Give the inputs for emission probabilities: \n";
+	ifstream emi_prob ("input_file/emis_prob");
 	for(i=0;i<s;i++)
 	{
 		total_prob = 0.0;
 		for(j=0;j<o;j++)
 		{
-			cin>>prob_s;
+			emi_prob>>temp_s;
+			prob_s = stof(temp_s);
+			cout<<prob_s<<" ";
 			total_prob = total_prob + prob_s;
 			my_pair = make_pair(i,j);
 			if(total_prob <= 1.0 || j==(o - 1))
@@ -191,24 +204,35 @@ int main()
 				exit(1);
 			}
 		}
+		cout<<endl;
 	}
+
+	emi_prob.close();
 
 	cout<<"All inputs have been succesfully provided"<<endl;
 
 	/// Now we need to take the values for evaluation
 	/// we need to first take the input of number of observations recorded by the computer
 
+	ifstream observatons ("input_file/comp_obsv");
+
 	int obs;
 	cout<<"Please provide the number of oservations: ";
-	cin>>obs;
+	observatons>>temp_s;
+
+	obs = stoi(temp_s);
+	cout<<obs<<endl;
 
 	cout<<"The observations are: \n";
 
 	for(i=0;i<obs;i++)
 	{
-		cin>>temp_o;
+		observatons>>temp_o;
+		cout<<temp_o<<" ";
 		observation_vec.push_back(o_loc[temp_o]);
 	}
+
+	cout<<endl;
 
 	hmm HMM =  hmm(state_vec,obs_vec,s_loc,o_loc,start_prob,trans_prob,emis_prob);
 
