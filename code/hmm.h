@@ -43,4 +43,5 @@ public:
 	float P_S_i(int x2,int x1);
 	float prob_t(int x, int t);
 	float prob_t_1(int x, int t);
+	float execute_x(string x);
 };

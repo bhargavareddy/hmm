@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////
 // Basic testing if working properly or not..
 
-int count = 0;
+	int count = 0;
 	int ii;
 	int k1,k2;
 	while(count<10) {
@@ -16,7 +16,8 @@ int count = 0;
 			cin>>k1;
 			cin>>k2;
 
-			cout<<trans_prob[make_pair(k1,k2)]<<endl;
+			cout<<trans_prob[make_pair(k2,k1)]<<endl;
+			cout<<HMM.P_S_i(k1,k2)<<endl;
 		}
 
 		if(ii == 1)	
@@ -43,6 +44,7 @@ int count = 0;
 			cin>>k1;
 			cin>>k2;
 
-			cout<<emis_prob[make_pair(k1,k2)]<<endl;
+			cout<<emis_prob[make_pair(k2,k1)]<<endl;
+			cout<<HMM.P_O_i(k1,k2)<<endl;
 		}
 	}

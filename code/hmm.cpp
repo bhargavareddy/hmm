@@ -66,6 +66,9 @@ void hmm::load_obs_list(vector<int> _exec_list)
 	exec_list = _exec_list;
 }
 
+/// P_O_i is working properly
+/// calculates the value in O(1) time
+
 float hmm::P_O_i(int y,int x)
 {
 	pair<int,int> myp;
@@ -77,6 +80,8 @@ float hmm::P_O_i(int y,int x)
 	return result;
 }
 
+/// P_S_i is working properly
+/// calculates the value in O(1) time
 
 float hmm::P_S_i(int x2,int x1)
 {
@@ -92,9 +97,19 @@ float hmm::P_S_i(int x2,int x1)
 float hmm::prob_t(int x, int t)
 {
 	float result = 0.0;
+	set_den(t);
+	float k = den_p;
+	if(t > 1) 
+	{
+		result = P_O_i(exec_list[t-1],x) * prob_t_1(x,t);
+		result = result / k;
+	}
 
-	result = P_O_i(exec_list[t-1],x) * prob_t_1(x,t);
-	result = result / den_p;
+	else if(t == 1)
+	{
+		result = P_O_i(exec_list[t-1],x) * prob_start[vec_state[x]];
+		result = result / k;
+	}
 
 	return result;
 }
@@ -108,12 +123,16 @@ float hmm::prob_t_1(int x,int t)
 	/// x is the X in P(Xt/Y1:t-1)
 
 	int s_siz = loc_s.size();
-
+if(t > 1)
 	for(i=0;i<s_siz;i++)
 	{
 		result = result + P_S_i(x,i) * prob_t(i,t-1);
 	}
-
+else if(t == 1)
+	for(i=0;i<s_siz;i++)
+	{
+		result = result + P_S_i(x,i) * prob_start[vec_state[x]];
+	}
 	return result;
 }
 
@@ -126,10 +145,21 @@ void hmm::set_den(int t)
 
 	int k = exec_list[t-1];
 
-	for(i=0;i<s_siz;i++)
-	{
-		result = result + P_O_i(k,i) * prob_t_1(i,t);
-	}
-
+	if(t > 1)
+		for(i=0;i<s_siz;i++)
+		{
+			result = result + P_O_i(k,i) * prob_t_1(i,t);
+		}
+	else if(t == 1)
+		for(i=0;i<s_siz;i++)
+		{
+			result = result + P_O_i(k,i) * prob_start[vec_state[i]];
+		}
 	den_p = result;
+}
+
+float hmm::execute_x(string x)
+{
+	int k = loc_s[x];
+	float f = prob_t(k,exec_list.size());
 }

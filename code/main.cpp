@@ -59,17 +59,17 @@ int main()
 
 	ifstream myfile ("input_file/state_obs");
 
-	cout<<"Give the number of states: ";
+	// cout<<"Give the number of states: ";
 	getline(myfile,temp_line);
 	istringstream buffer(temp_line);
 	buffer >> s;
-	cout<<s<<endl;
+	// cout<<s<<endl;
 
-	cout<<"Give the number of observations: ";
+	// cout<<"Give the number of observations: ";
 	getline(myfile,temp_line);
 	istringstream buffer1(temp_line);
 	buffer1 >> o;
-	cout<<o<<endl;
+	// cout<<o<<endl;
 
 	myfile.close();
 	
@@ -80,16 +80,16 @@ int main()
 
 	ifstream states_list ("input_file/states_list");
 
-	cout<<"Please give me the states: "<<endl;
+	// cout<<"Please give me the states: "<<endl;
 	vector<string> state_vec;
 
 	for(i=0;i<s;i++)
 	{
-		cout<<"state "<<i<<": ";
+		// cout<<"state "<<i<<": ";
 		getline(states_list ,temp_s);
 		//cin>>temp_s;
 		state_vec.push_back(temp_s);
-		cout << temp_s <<endl;
+		// cout << temp_s <<endl;
 
 		s_loc[temp_s] = i;
 	}
@@ -98,29 +98,29 @@ int main()
 
 	ifstream obs_list ("input_file/obs_list");
 
-	cout<<"Please give me all the possile observations: "<<endl;
+	// cout<<"Please give me all the possile observations: "<<endl;
 	vector<string> obs_vec;
 
 	for(i=0;i<o;i++)
 	{
-		cout<<"state "<<i<<": ";
+		// cout<<"state "<<i<<": ";
 		getline(obs_list ,temp_o);
 		obs_vec.push_back(temp_o);
-		cout << temp_o <<endl;
+		// cout << temp_o <<endl;
 		o_loc[temp_o] = i;
 	}
 		obs_list.close();
 	//Creating a map for start probabilities
 
-	cout<<"Please give me the probabilities for each of the states: "<<endl;
+	// cout<<"Please give me the probabilities for each of the states: "<<endl;
 	ifstream state_prob ("input_file/start_prob");
 	total_prob = 0.0;
 	for(i=0;i<s;i++)
 	{
-		cout<<state_vec[i]<<": ";
+		// cout<<state_vec[i]<<": ";
 		getline(state_prob,temp_s);
 		prob_s = stof(temp_s);
-		cout<<temp_s<<endl;
+		// cout<<temp_s<<endl;
 		total_prob = total_prob + prob_s;
 		if(total_prob < 1.0 || i== (s - 1))
 			{
@@ -131,7 +131,7 @@ int main()
 			}
 		else
 			{
-				cout<<"The total probability is exceeding 1. Program Exiting...."<<endl;
+				// cout<<"The total probability is exceeding 1. Program Exiting...."<<endl;
 				exit(1);
 			}
 
@@ -140,7 +140,7 @@ int main()
 	state_prob.close();
 
 	//// Taking the inputs for transitions..
-	cout<<"Give the inputs for transition probabilities: \n";
+	// cout<<"Give the inputs for transition probabilities: \n";
 	ifstream tran_prob ("input_file/trans_prob");
 	pair<int,int> my_pair;
 	for(i=0;i<s;i++)
@@ -150,7 +150,7 @@ int main()
 		{
 			tran_prob>>temp_s;
 			prob_s = stof(temp_s);
-			cout<<prob_s<<" ";
+			// cout<<prob_s<<" ";
 			total_prob = total_prob + prob_s;
 			my_pair = make_pair(i,j);
 			if(total_prob < 1 || j==(s - 1))
@@ -166,16 +166,16 @@ int main()
 			}
 			else
 			{
-				cout<<"The total probability is exceeding 1. Program Exiting...."<<endl;
+				// cout<<"The total probability is exceeding 1. Program Exiting...."<<endl;
 				exit(1);
 			}
 		}
-		cout<<endl;
+		// cout<<endl;
 	}
 
 	tran_prob.close();
 
-	cout<<"Give the inputs for emission probabilities: \n";
+	// cout<<"Give the inputs for emission probabilities: \n";
 	ifstream emi_prob ("input_file/emis_prob");
 	for(i=0;i<s;i++)
 	{
@@ -184,7 +184,7 @@ int main()
 		{
 			emi_prob>>temp_s;
 			prob_s = stof(temp_s);
-			cout<<prob_s<<" ";
+			// cout<<prob_s<<" ";
 			total_prob = total_prob + prob_s;
 			my_pair = make_pair(i,j);
 			if(total_prob <= 1.0 || j==(o - 1))
@@ -200,16 +200,16 @@ int main()
 			}
 			else
 			{
-				cout<<"The total probability is exceeding 1. Program Exiting...."<<endl;
+				// cout<<"The total probability is exceeding 1. Program Exiting...."<<endl;
 				exit(1);
 			}
 		}
-		cout<<endl;
+		// cout<<endl;
 	}
 
 	emi_prob.close();
 
-	cout<<"All inputs have been succesfully provided"<<endl;
+	// cout<<"All inputs have been succesfully provided"<<endl;
 
 	/// Now we need to take the values for evaluation
 	/// we need to first take the input of number of observations recorded by the computer
@@ -217,75 +217,32 @@ int main()
 	ifstream observatons ("input_file/comp_obsv");
 
 	int obs;
-	cout<<"Please provide the number of oservations: ";
+	// cout<<"Please provide the number of oservations: ";
 	observatons>>temp_s;
 
 	obs = stoi(temp_s);
-	cout<<obs<<endl;
+	// cout<<obs<<endl;
 
-	cout<<"The observations are: \n";
+	// cout<<"The observations are: \n";
 
 	for(i=0;i<obs;i++)
 	{
 		observatons>>temp_o;
-		cout<<temp_o<<" ";
+		// cout<<temp_o<<" ";
 		observation_vec.push_back(o_loc[temp_o]);
 	}
 
-	cout<<endl;
+	// cout<<endl;
 
 	hmm HMM =  hmm(state_vec,obs_vec,s_loc,o_loc,start_prob,trans_prob,emis_prob);
 
-	/////////////////////////////////////////////////////////////////
-// Basic testing if working properly or not..
+	HMM.load_obs_list(observation_vec);
 
-	int count = 0;
-	int ii;
-	int k1,k2;
-	while(count<10) {
-		string s1 = "";
-		string s2 = "";
+	cout<<"String whose probability is to be calculated: ";
+	cin>>temp_s;
 
-		cout<<"Give an input number: ";
-		cin>>ii;
-
-		if(ii == 0)
-		{
-			cin>>k1;
-			cin>>k2;
-
-			cout<<trans_prob[make_pair(k2,k1)]<<endl;
-			cout<<HMM.P_S_i(k1,k2)<<endl;
-		}
-
-		if(ii == 1)	
-		{
-			cout<<"testing for transition: \n";
-
-			cin>>s1;
-			cin>>s2;
-
-			cout<<give_prob_T(s1,s2)<<endl;
-		}
-
-		if(ii == 2)	
-		{
-			cout<<"testing for emission: \n";
-
-			cin>>s1;
-			cin>>s2;
-
-			cout<<give_prob_E(s1,s2)<<endl;
-		}
-		if(ii == 3)
-		{
-			cin>>k1;
-			cin>>k2;
-
-			cout<<emis_prob[make_pair(k2,k1)]<<endl;
-			cout<<HMM.P_O_i(k1,k2)<<endl;
-		}
-	}
+	float ss = HMM.execute_x(temp_s);
+	cout<<"Result is: "<<ss<<endl;
 
 	return 0;
 }
