@@ -1,0 +1,50 @@
+/////////////////////////////////////////////////////////////////
+// Basic testing if working properly or not..
+
+	int count = 0;
+	int ii;
+	int k1,k2;
+	while(count<10) {
+		string s1 = "";
+		string s2 = "";
+
+		cout<<"Give an input number: ";
+		cin>>ii;
+
+		if(ii == 0)
+		{
+			cin>>k1;
+			cin>>k2;
+
+			cout<<trans_prob[make_pair(k2,k1)]<<endl;
+			cout<<HMM.P_S_i(k1,k2)<<endl;
+		}
+
+		if(ii == 1)	
+		{
+			cout<<"testing for transition: \n";
+
+			cin>>s1;
+			cin>>s2;
+
+			cout<<give_prob_T(s1,s2)<<endl;
+		}
+
+		if(ii == 2)	
+		{
+			cout<<"testing for emission: \n";
+
+			cin>>s1;
+			cin>>s2;
+
+			cout<<give_prob_E(s1,s2)<<endl;
+		}
+		if(ii == 3)
+		{
+			cin>>k1;
+			cin>>k2;
+
+			cout<<emis_prob[make_pair(k2,k1)]<<endl;
+			cout<<HMM.P_O_i(k1,k2)<<endl;
+		}
+	}
