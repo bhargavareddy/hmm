@@ -190,7 +190,7 @@ int main()
 		observation_vec.push_back(o_loc[temp_o]);
 	}
 
-	hmm HMM =  hmm(s_loc,o_loc,start_prob,trans_prob,emis_prob);
+	hmm HMM =  hmm(state_vec,obs_vec,s_loc,o_loc,start_prob,trans_prob,emis_prob);
 
 	return 0;
 }

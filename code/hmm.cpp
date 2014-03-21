@@ -43,17 +43,22 @@ the oservation is also implemented the same as above. The size would be 'o'
 
 using namespace std;
 
-hmm::hmm(	map<string,int> _loc_s, 
+hmm::hmm(	vector<string> _vec_state,
+			vector<string> _vec_obs,
+			map<string,int> _loc_s, 
 			map<string,int> _loc_c, 
 			map<string,float> _prob_start, 
 			map<pair<int,int>,float> _prob_trans, 
 			map<pair<int,int>,float> _prob_emis)
 {
+	vec_state = _vec_state;
+	vec_obs = _vec_obs;
 	loc_s = _loc_s;
 	loc_c = _loc_c;
 	prob_start = _prob_start;
 	prob_trans = _prob_trans;
 	prob_emis = _prob_emis;
+	den_p = 0.0;
 }
 
 void hmm::load_obs_list(vector<int> _exec_list)
@@ -84,17 +89,47 @@ float hmm::P_S_i(int x2,int x1)
 	return result;
 }
 
-float hmm::prob_t(int t)
+float hmm::prob_t(int x, int t)
 {
-	float result = 0.2;
+	float result = 0.0;
+
+	result = P_O_i(exec_list[t-1],x) * prob_t_1(x,t);
+	result = result / den_p;
 
 	return result;
 }
 
 
-float hmm::prob_t_1(int t)
+float hmm::prob_t_1(int x,int t)
 {
-	float result = 0.2;
+	float result = 0.0;
+	int i;
+
+	/// x is the X in P(Xt/Y1:t-1)
+
+	int s_siz = loc_s.size();
+
+	for(i=0;i<s_siz;i++)
+	{
+		result = result + P_S_i(x,i) * prob_t(i,t-1);
+	}
 
 	return result;
+}
+
+void hmm::set_den(int t)
+{
+	float result = 0.0;
+
+	int i;
+	int s_siz = loc_s.size();
+
+	int k = exec_list[t-1];
+
+	for(i=0;i<s_siz;i++)
+	{
+		result = result + P_O_i(k,i) * prob_t_1(i,t);
+	}
+
+	den_p = result;
 }

@@ -12,12 +12,17 @@ class hmm
 {
 	map<string,int> loc_s;
 	map<string,int> loc_c;
+	vector<string> vec_state;
+	vector<string> vec_obs;
 	map<string,float> prob_start;			// the start probabilities of state
 	map<pair<int,int>,float> prob_trans;	// The transition probability
 	map<pair<int,int>,float> prob_emis;		// The emission probability
 	vector<int> exec_list;	
+	float den_p ;
 public:
-	hmm(map<string,int> _loc_s, 
+	hmm(vector<string> _vec_state,
+		vector<string> _vec_obs,
+		map<string,int> _loc_s, 
 		map<string,int> _loc_c, 
 		map<string,float> _prob_start, 
 		map<pair<int,int>,float> _prob_trans, 
@@ -33,8 +38,9 @@ public:
  	*/
 
 
+	void set_den(int t);
 	float P_O_i(int y,int x);
 	float P_S_i(int x2,int x1);
-	float prob_t(int t);
-	float prob_t_1(int t);
+	float prob_t(int x, int t);
+	float prob_t_1(int x, int t);
 };
