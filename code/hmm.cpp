@@ -81,7 +81,7 @@ float hmm::P_O_i(int y,int x)
 float hmm::P_S_i(int x2,int x1)
 {
 	pair<int,int> myp;
-	myp = make_pair(x2,x1);
+	myp = make_pair(x1,x2);
 	float result;
 
 	result = prob_trans[myp];

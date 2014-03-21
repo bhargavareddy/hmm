@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include <utility>
+#include <fstream>
+#include <sstream>
 
 #include "hmm.h"
 
@@ -53,18 +55,30 @@ int main()
 	string temp_o = "";
 	float prob_s;
 	float total_prob;
+	string temp_line = "";
 
+	ifstream myfile ("input_file/state_obs");
 
 	cout<<"Give the number of states: ";
-	cin>>s;
+	getline(myfile,temp_line);
+	istringstream buffer(temp_line);
+	buffer >> s;
+	cout<<s<<endl;
 
 	cout<<"Give the number of observations: ";
-	cin>>o;
+	getline(myfile,temp_line);
+	istringstream buffer1(temp_line);
+	buffer1 >> o;
+	cout<<o<<endl;
+
+	myfile.close();
 	
 	// The values of s,o are available with us
 
 	// Assuming that each state is represented by a string
 	// Taking the input of all the states
+
+	ifstream states_list ("input_file/states_list");
 
 	cout<<"Please give me the states: "<<endl;
 	vector<string> state_vec;
@@ -72,11 +86,17 @@ int main()
 	for(i=0;i<s;i++)
 	{
 		cout<<"state "<<i<<": ";
-		cin>>temp_s;
+		getline(states_list ,temp_s);
+		//cin>>temp_s;
 		state_vec.push_back(temp_s);
+		cout << temp_s <<endl;
 
 		s_loc[temp_s] = i;
 	}
+
+	states_list.close();
+
+	ifstream obs_list ("input_file/obs_list");
 
 	cout<<"Please give me all the possile observations: "<<endl;
 	vector<string> obs_vec;
@@ -84,12 +104,12 @@ int main()
 	for(i=0;i<o;i++)
 	{
 		cout<<"state "<<i<<": ";
-		cin>>temp_o;
+		getline(obs_list ,temp_o);
 		obs_vec.push_back(temp_o);
-
+		cout << temp_o <<endl;
 		o_loc[temp_o] = i;
 	}
-
+		obs_list.close();
 	//Creating a map for start probabilities
 
 	cout<<"Please give me the probabilities for each of the states: "<<endl;
@@ -191,6 +211,57 @@ int main()
 	}
 
 	hmm HMM =  hmm(state_vec,obs_vec,s_loc,o_loc,start_prob,trans_prob,emis_prob);
+
+	/////////////////////////////////////////////////////////////////
+// Basic testing if working properly or not..
+
+	int count = 0;
+	int ii;
+	int k1,k2;
+	while(count<10) {
+		string s1 = "";
+		string s2 = "";
+
+		cout<<"Give an input number: ";
+		cin>>ii;
+
+		if(ii == 0)
+		{
+			cin>>k1;
+			cin>>k2;
+
+			cout<<trans_prob[make_pair(k2,k1)]<<endl;
+			cout<<HMM.P_S_i(k1,k2)<<endl;
+		}
+
+		if(ii == 1)	
+		{
+			cout<<"testing for transition: \n";
+
+			cin>>s1;
+			cin>>s2;
+
+			cout<<give_prob_T(s1,s2)<<endl;
+		}
+
+		if(ii == 2)	
+		{
+			cout<<"testing for emission: \n";
+
+			cin>>s1;
+			cin>>s2;
+
+			cout<<give_prob_E(s1,s2)<<endl;
+		}
+		if(ii == 3)
+		{
+			cin>>k1;
+			cin>>k2;
+
+			cout<<emis_prob[make_pair(k2,k1)]<<endl;
+			cout<<HMM.P_O_i(k1,k2)<<endl;
+		}
+	}
 
 	return 0;
 }
